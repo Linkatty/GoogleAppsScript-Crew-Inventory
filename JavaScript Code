@@ -1,0 +1,30 @@
+function checkInventory() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("YourSheetName");  // Replace with your exact sheet name
+  var range = sheet.getRange("A2:D30");  // Adjust this to the range of your data
+  var values = range.getValues();
+
+  var lowStockItems = [];
+
+  // Iterate over each row
+  for (var i = 0; i < values.length; i++) {
+    var item = values[i][0];        // Item name
+    var category = values[i][1];    // Category
+    var quantity = values[i][2];    // Quantity
+    var halfQuantity = values[i][3]; // Half Quantity
+    
+    // Check if quantity is less than or equal to the half quantity
+    if (quantity <= halfQuantity) {
+      lowStockItems.push(item);
+    }
+  }
+
+  // If there are any low stock items, send an email
+  if (lowStockItems.length > 0) {
+    var emailAddress = "your-email@example.com";  // Your email
+    var subject = "Low Stock Alert";
+    var body = "The following items are running low on stock:\n\n" + lowStockItems.join("\n");
+
+    MailApp.sendEmail(emailAddress, subject, body);
+  }
+}
